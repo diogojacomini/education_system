@@ -9,6 +9,8 @@ public class MsgResp implements Serializable{
     private ArrayList<MsgReq> numeros = new ArrayList<MsgReq>();
     private ArrayList<MsgReq> profes = new ArrayList<MsgReq>();
     private ArrayList<MsgReq> cursos = new ArrayList<MsgReq>();
+    private ArrayList<MsgReq> despesas = new ArrayList<MsgReq>();
+
 
     public MsgResp() {
     }
@@ -33,6 +35,10 @@ public class MsgResp implements Serializable{
     public void setResultadoCurso(MsgReq resultado){
         this.resultado = resultado;
         cursos.add(resultado);
+    }
+    public void setResultadoDespesa(MsgReq resultado){
+        this.resultado = resultado;
+        despesas.add(resultado);
     }
 
     public int getStatus() {
@@ -372,7 +378,7 @@ public class MsgResp implements Serializable{
                 break;
             case "modalidade":
                 for(MsgReq student: this.cursos) {
-                    if (student.getVar2().toLowerCase().contains(valor)) {
+                    if (student.getVar3().toLowerCase().contains(valor)) {
                         System.out.format("| %5s " + "| %"+max_value_v1+"s " + "| %"+max_value_v2+"s " + "| %10s " + "| %10s |",
                                 student.getId(), student.getVar1(), student.getVar2(), student.getVar3(), student.getVar4());
                         System.out.println(); // value
@@ -414,4 +420,153 @@ public class MsgResp implements Serializable{
             }
         }
     }
+
+    public void listar_despesas(){
+        System.out.println("Quantidade de Despesas: " + despesas.size());
+
+        int max_value_v1 = 14;
+        int max_value_v2 = 11;
+        for(MsgReq n: despesas) {
+            if(n.getVar1().length() > max_value_v1){
+                max_value_v1 = n.getVar1().length();
+            }
+            if(n.getVar2().length() > max_value_v2){
+                max_value_v2 = n.getVar2().length();
+            }
+        }
+        // Id / DATA / Descricao / Horario
+        String string_line = "-";
+        String finalResult = string_line.repeat(11+5+max_value_v1+max_value_v2+10);
+
+        System.out.println("+" + finalResult + "+"); // inicio
+
+        System.out.printf("| %5s " + "| %"+max_value_v1+"s " + "| %"+max_value_v2+"s " + "| %10s |", "ID", "Data Despesa", "Descricao", "Valor");
+        System.out.println();
+        System.out.printf("| %5s " + "+ %"+max_value_v1+"s " + "+ %"+max_value_v2+"s " + "+ %10s |",
+                string_line.repeat(5), string_line.repeat(max_value_v1), string_line.repeat(max_value_v2), string_line.repeat(10), string_line.repeat(10));
+        System.out.println(); // sep
+
+        for(MsgReq student: despesas){
+            System.out.format("| %5s " + "| %"+max_value_v1+"s " + "| %"+max_value_v2+"s " + "| %10s |",
+                    student.getId(), student.getVar1(), student.getVar2(), student.getVar3());
+            System.out.println(); // value
+        }
+
+        System.out.println("+" + finalResult + "+"); // final
+    }
+
+    public void listar_despesas_by(String variable, String valor){
+        System.out.println("Em construcao!");
+        variable = variable.toLowerCase();
+        valor = valor.toLowerCase();
+
+        int max_value_v1 = 14;
+        int max_value_v2 = 11;
+        for(MsgReq n: despesas) {
+            if(n.getVar1().length() > max_value_v1){
+                max_value_v1 = n.getVar1().length();
+            }
+            if(n.getVar2().length() > max_value_v2){
+                max_value_v2 = n.getVar2().length();
+            }
+        }
+        // Id / DATA / Descricao / Horario
+        String string_line = "-";
+        String finalResult = string_line.repeat(11+5+max_value_v1+max_value_v2+10);
+
+        System.out.println("+" + finalResult + "+"); // inicio
+
+        System.out.printf("| %5s " + "| %"+max_value_v1+"s " + "| %"+max_value_v2+"s " + "| %10s |", "ID", "Data Despesa", "Descricao", "Valor");
+        System.out.println();
+        System.out.printf("| %5s " + "+ %"+max_value_v1+"s " + "+ %"+max_value_v2+"s " + "+ %10s |",
+                string_line.repeat(5), string_line.repeat(max_value_v1), string_line.repeat(max_value_v2), string_line.repeat(10), string_line.repeat(10));
+        System.out.println(); // sep
+
+        switch (variable){
+            case "id":
+                for(MsgReq desp: this.despesas) {
+                    if (desp.getId().toLowerCase().contains(valor)) {
+                        System.out.format("| %5s " + "| %"+max_value_v1+"s " + "| %"+max_value_v2+"s " + "| %10s |",
+                                desp.getId(), desp.getVar1(), desp.getVar2(), desp.getVar3());
+                        System.out.println(); // value
+                    }
+                }
+                break;
+            case "descricao":
+                for(MsgReq desp: this.despesas) {
+                    if (desp.getVar1().toLowerCase().contains(valor)) {
+                        System.out.format("| %5s " + "| %"+max_value_v1+"s " + "| %"+max_value_v2+"s " + "| %10s |",
+                                desp.getId(), desp.getVar1(), desp.getVar2(), desp.getVar3());
+                        System.out.println(); // value
+                    }
+                }
+                break;
+            case "data":
+                for(MsgReq desp: this.despesas) {
+                    if (desp.getVar4().toLowerCase().contains(valor)) {
+                        System.out.format("| %5s " + "| %"+max_value_v1+"s " + "| %"+max_value_v2+"s " + "| %10s |",
+                                desp.getId(), desp.getVar1(), desp.getVar2(), desp.getVar3());
+                        System.out.println(); // value
+                    }
+                }
+                break;
+        }
+
+        System.out.println("+" + finalResult + "+"); // final
+
+
+    }
+
+    public void consulta_lucro(){
+        double receita = 0.0;
+        double despesas_professores = 0.0;
+        double v_despesas = 0.0;
+
+        for(MsgReq aluno: this.numeros){
+            receita += Float.parseFloat(aluno.getVar3());
+        }
+
+        for(MsgReq prof: this.profes){
+            despesas_professores += Float.parseFloat(prof.getVar3());
+        }
+
+        for(MsgReq desp: this.despesas){
+            v_despesas += Float.parseFloat(desp.getVar3());
+        }
+
+        System.out.printf("Lucro: %.2f\n", receita-(despesas_professores+v_despesas));
+
+    }
+
+    public void consulta_custo_professores(){
+        double total = 0.0;
+
+        for(MsgReq prof: this.profes){
+            if(prof.getVar4().equalsIgnoreCase("ativo")){
+                total += Float.parseFloat(prof.getVar3());
+            }
+        }
+        System.out.printf("Total Gasto com Professores: %.2f\n", total);
+    }
+
+    public void consulta_receita(){
+        double total = 0.0;
+
+        for(MsgReq aluno: this.numeros){
+            if(aluno.getVar4().equalsIgnoreCase("ativo")){
+                total += Float.parseFloat(aluno.getVar3());
+            }
+        }
+        System.out.printf("Total Receita com Alunos: %.2f\n", total);
+    }
+
+    public void consulta_despesas(){
+        double total = 0.0;
+
+        for(MsgReq desp: this.despesas){
+            total += Float.parseFloat(desp.getVar3());
+        }
+        System.out.printf("Total Gastos com Despesas: %.2f\n", total);
+    }
+
 }

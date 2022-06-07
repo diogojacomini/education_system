@@ -47,7 +47,7 @@ public class Cliente {
             System.out.println("\n]------------------------[ Gerenciador Educacional ]------------------------[");
 
             System.out.println("\nEscolha uma Opcao de Gerenciamento: ");
-            System.out.println("  1 - Alunos\n  2 - Professores\n  3 - Cursos\n  4 - Financeiro\n  5 - Acessos\n  0 - exit");
+            System.out.println("  1 - Alunos\n  2 - Professores\n  3 - Cursos\n  4 - Despesas\n  5 - Financeiro\n  0 - exit");
 
             System.out.print("Digite: ");
             try{
@@ -405,6 +405,165 @@ public class Cliente {
                             break;
 
                     }
+                    break;
+                case 4: // Despesas
+                    System.out.println("\n" + "-".repeat(10) +"[ Gerenciamento de Despesas ]"+"-".repeat(10)+"\nQual acao deseja prosseguir: ");
+                    System.out.println("  1 - Cadastro de Despesa\n  2 - Listar Despesas\n  3 - Pesquisar Despesas");
+                    System.out.print("Digite: ");
+                    int escolha_despesas = 0;
+
+                    try{
+                        escolha_despesas = Integer.parseInt(in.nextLine());
+                        if(escolha_despesas < 1 || escolha_despesas > 4){
+                            break;
+                        }
+                    } catch (Exception e){
+                        break;
+                    }
+
+                    switch (escolha_despesas){
+
+                        case 1: // Cadastrar uma Despesa
+                            System.out.println("\n-----[ Cadastro de Despesas ]-----");
+
+                            System.out.print("Data Despesa: ");
+                            String data_despesa = in.nextLine();
+                            System.out.print("Descricao: ");
+                            String descricao = in.nextLine();
+                            System.out.print("Valor: ");
+                            String valor_despesa = in.nextLine();
+
+                            System.out.print("Confirma o Cadastro [s/n]: ");
+                            String confirma_cadastro_dp = in.nextLine();
+
+                            if (confirma_cadastro_dp.equalsIgnoreCase("s")){}else{
+                                System.out.println("\n[ Falha ] - Despesa NAO Cadastrado!");
+                                break;
+                            }
+
+                            MsgReq requisicao_despesa_1 = new MsgReq(data_despesa, descricao, valor_despesa, "", principal_option);
+
+                            new Cliente();
+                            conexao.send(socket, requisicao_despesa_1);
+
+                            MsgResp resposta_despesa_1 = (MsgResp) conexao.receive(socket);
+                            System.out.println("\n[ OK ] - Despesa Cadastrado!");
+                            break;
+
+                        case 2: // Listar despesas
+                            System.out.println("\n-----[ Lista de Despesas Cadastras no Sistema ]-----");
+                            MsgReq requisicao_despesa_2 = new MsgReq("", "", "", "", 42);
+
+                            new Cliente();
+                            conexao.send(socket, requisicao_despesa_2);
+
+                            MsgResp resposta_despesa_2 = (MsgResp) conexao.receive(socket);
+                            resposta_despesa_2.listar_despesas();
+
+                            System.out.print("Enter para continuar. ");
+                            in.nextLine();
+                            break;
+
+                        case 3: // Pesquisar despesas
+                            System.out.println("\n-----[ Pesquisa de Despesas Cadastradas ]-----");
+                            System.out.println("Para realizar a pesquisa é necessário informar o valor e coluna. \nPor Exemplo: Pesquise por todos os cursos 'AED', usando a coluna 'Modalidade'");
+                            System.out.println("É preciso infomar umas das colunas: ['ID', 'Descricao', 'Data']\n");
+                            // TODO: Alterar descricao
+                            System.out.print("Valor: ");
+                            String valor_escolha_fin = in.nextLine();
+                            System.out.print("Nome da Coluna: ");
+                            String variable_escolha_fin = in.nextLine();
+
+                            MsgReq requisicao_despesa_3 = new MsgReq(variable_escolha_fin, valor_escolha_fin, "", "", 43);
+
+                            new Cliente();
+                            conexao.send(socket, requisicao_despesa_3);
+
+                            MsgResp resposta_despesa_3 = (MsgResp) conexao.receive(socket);
+                            resposta_despesa_3.listar_despesas_by(variable_escolha_fin, valor_escolha_fin);
+
+                            System.out.print("Enter para continuar. ");
+                            in.nextLine();
+                            break;
+
+                    }
+                    break;
+                case 5: //Financeiro
+                    // Cadastros de empregados??
+
+                    System.out.println("\n" + "-".repeat(10) +"[ Gerenciamento de Financeiro ]"+"-".repeat(10)+"\nQual acao deseja prosseguir: ");
+                    System.out.println("  1 - Consultar Lucro\n  2 - Gastos Com Professores\n  3 - Total de Receita");
+                    System.out.print("Digite: ");
+                    int escolha_financeiro = 0;
+
+                    try{
+                        escolha_financeiro = Integer.parseInt(in.nextLine());
+                        if(escolha_financeiro < 1 || escolha_financeiro > 4){
+                            break;
+                        }
+                    } catch (Exception e){
+                        break;
+                    }
+
+                    switch (escolha_financeiro){
+                        case 1: // Consultar Lucro mensal, considerando os gastos com despesas e salarios dos professores
+                            System.out.println("\n-----[ Lucro Atual ]-----");
+                            MsgReq requisicao_fin_1 = new MsgReq("", "", "", "", 51);
+
+                            new Cliente();
+                            conexao.send(socket, requisicao_fin_1);
+
+                            MsgResp resposta_fin_1 = (MsgResp) conexao.receive(socket);
+                            resposta_fin_1.consulta_lucro();
+
+                            System.out.print("Enter para continuar. ");
+                            in.nextLine();
+                            break;
+
+                        case 2: // Total de custos com Professores
+                            System.out.println("\n-----[ Custos com Professores ]-----");
+                            MsgReq requisicao_fin_2 = new MsgReq("", "", "", "", 52);
+
+                            new Cliente();
+                            conexao.send(socket, requisicao_fin_2);
+
+                            MsgResp resposta_fin_2 = (MsgResp) conexao.receive(socket);
+                            resposta_fin_2.consulta_custo_professores();
+
+                            System.out.print("Enter para continuar. ");
+                            in.nextLine();
+                            break;
+
+                        case 3: // Receita (Tatal de receita)
+                            System.out.println("\n-----[ Receita de Alunos ]-----");
+                            MsgReq requisicao_fin_3 = new MsgReq("", "", "", "", 53);
+
+                            new Cliente();
+                            conexao.send(socket, requisicao_fin_3);
+
+                            MsgResp resposta_fin_3 = (MsgResp) conexao.receive(socket);
+                            resposta_fin_3.consulta_receita();
+
+                            System.out.print("Enter para continuar. ");
+                            in.nextLine();
+                            break;
+
+                        case 4: // Total de gastos
+                            System.out.println("\n-----[ Total Gastos com Despesas ]-----");
+                            MsgReq requisicao_fin_4 = new MsgReq("", "", "", "", 54);
+
+                            new Cliente();
+                            conexao.send(socket, requisicao_fin_4);
+
+                            MsgResp resposta_fin_4 = (MsgResp) conexao.receive(socket);
+                            resposta_fin_4.consulta_despesas();
+
+                            System.out.print("Enter para continuar. ");
+                            in.nextLine();
+                            break;
+
+                    }
+
                     break;
 
             }
