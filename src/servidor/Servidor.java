@@ -1,9 +1,7 @@
 package servidor;
 
 import comum.*;
-import java.io.*;
 import java.net.*;
-import java.util.Scanner;
 
 public class Servidor {
 
@@ -11,157 +9,188 @@ public class Servidor {
     static Socket client_socket;
     static Conexao conexao;
     static String msg;
-    // static MsgResp resposta;
 
     public Servidor() {
 
         try {
             serversocket = new ServerSocket(9600);
-            System.out.println("Sistema distribuida no ar ...");
+            System.out.println("\n+" + "-".repeat(75) + "+");
+            System.out.printf("| %21s " + "%20s" + "%22s |", "", "-- { Sistema Distribuido } --", "");
+            System.out.println("\n+" + "-".repeat(75) + "+");
         } catch (Exception e) {
-            System.out.println("Nao criei o server socket...");
+            System.out.println("Falha ao Criar Server Socket...");
         }
     }
 
     public static void main(String args[]) {
-        //Requisicao_main escolha_main = new Requisicao_main();
-        MsgReq requisicao_aluno = new MsgReq();
-        MsgResp resposta_aluno = new MsgResp();
-        //MsgReqProf requisicao_prof = new MsgReqProf();
-        //MsgRespProf resposta_prof = new MsgRespProf();
-
+        MsgReq requisicao = new MsgReq();
+        MsgResp resposta = new MsgResp();
 
         do {
             new Servidor();
             if (connect()) {
-                requisicao_aluno = (MsgReq) conexao.receive(client_socket);
-                System.out.println("v1: "+requisicao_aluno.getVar1());
-                System.out.println("v2: "+requisicao_aluno.getVar2());
-                System.out.println("v3: "+requisicao_aluno.getVar3());
-                System.out.println("v4: "+requisicao_aluno.getVar4());
 
-                System.out.println("\nResultado: \n");
-                switch (requisicao_aluno.getFuncionalidade()){
-                    case 1:
-                        resposta_aluno.setResultado(new MsgReq(requisicao_aluno.getVar1(), requisicao_aluno.getVar2(), requisicao_aluno.getVar3(), requisicao_aluno.getVar4(), requisicao_aluno.getFuncionalidade()));
-                        resposta_aluno.setStatus(0);
-                        resposta_aluno.listar_aluno();
+                System.out.println("\n]------------------------[ Requisicao ]------------------------[");
+                requisicao = (MsgReq) conexao.receive(client_socket);
+
+                System.out.println("Inputs: ");
+                System.out.println("v1: " + requisicao.getVar1());
+                System.out.println("v2: " + requisicao.getVar2());
+                System.out.println("v3: " + requisicao.getVar3());
+                System.out.println("v4: " + requisicao.getVar4());
+                System.out.println("Funcionalidade: " + requisicao.getFuncionalidade());
+
+                System.out.println("\nResultado da Requisicao: \n******************************************************");
+                switch (requisicao.getFuncionalidade()){
+                    // ------- Cadastros ------- \\
+                    case 1: // Aluno
+                        resposta.setResultado(new MsgReq(requisicao.getVar1(), requisicao.getVar2(), requisicao.getVar3(), requisicao.getVar4(), requisicao.getFuncionalidade()));
+                        resposta.setStatus(0);
+                        System.out.println("\n[ OK ] - Aluno Cadastrado!\n");
                         break;
 
-                    case 2:
-                        resposta_aluno.setResultadoProf(new MsgReq(requisicao_aluno.getVar1(), requisicao_aluno.getVar2(), requisicao_aluno.getVar3(), requisicao_aluno.getVar4(), requisicao_aluno.getFuncionalidade()));
-                        resposta_aluno.setStatus(0);
-                        resposta_aluno.listar_professor();
+                    case 2: // Professor
+                        resposta.setResultadoProf(new MsgReq(requisicao.getVar1(), requisicao.getVar2(), requisicao.getVar3(), requisicao.getVar4(), requisicao.getFuncionalidade()));
+                        resposta.setStatus(0);
+                        System.out.println("\n[ OK ] - Professor Cadastrado!\n");
                         break;
 
-                    case 3:
-                        resposta_aluno.setResultadoCurso(new MsgReq(requisicao_aluno.getVar1(), requisicao_aluno.getVar2(), requisicao_aluno.getVar3(), requisicao_aluno.getVar4(), requisicao_aluno.getFuncionalidade()));
-                        resposta_aluno.setStatus(0);
-                        resposta_aluno.listar_cursos();
+                    case 3: // Curso
+                        resposta.setResultadoCurso(new MsgReq(requisicao.getVar1(), requisicao.getVar2(), requisicao.getVar3(), requisicao.getVar4(), requisicao.getFuncionalidade()));
+                        resposta.setStatus(0);
+                        System.out.println("\n[ OK ] - Curso Cadastrado!\n");
                         break;
 
-                    case 4:
-                        resposta_aluno.setResultadoDespesa(new MsgReq(requisicao_aluno.getVar1(), requisicao_aluno.getVar2(), requisicao_aluno.getVar3(), requisicao_aluno.getVar4(), requisicao_aluno.getFuncionalidade()));
-                        resposta_aluno.setStatus(0);
-                        resposta_aluno.listar_despesas();
+                    case 4: // Despesa
+                        resposta.setResultadoDespesa(new MsgReq(requisicao.getVar1(), requisicao.getVar2(), requisicao.getVar3(), requisicao.getVar4(), requisicao.getFuncionalidade()));
+                        resposta.setStatus(0);
+                        System.out.println("/n[ OK ] - Despesa Cadastrada!\n");
                         break;
 
-                    case 12: // Listar Alunos -> 1 - Aluno | 2 - Listar
-                        resposta_aluno.listar_aluno();
-                        resposta_aluno.setStatus(0);
+                    // ----- Acoes Aluno ----- \\
+                    case 12: // Listar alunos
+                        resposta.listar_aluno();
+                        resposta.setStatus(0);
+                        System.out.println("\n[ OK ] - Lista de Alunos.");
                         break;
 
-                    case 13: // Pesquisa Alunos -> 1 - Aluno | 3 - Pesquisa
-                        System.out.println("Pesquisa feita por Chave: " + requisicao_aluno.getVar1() + "Valor: " + requisicao_aluno.getVar2());
-                        resposta_aluno.listar_aluno_by(requisicao_aluno.getVar1(), requisicao_aluno.getVar2());
-                        resposta_aluno.setStatus(0);
+                    case 13: // Pesquisa por alunos
+                        System.out.println("Pesquisa feita por Chave(v1): '" + requisicao.getVar1() + "' Valor(v2): '" + requisicao.getVar2() + "'");
+                        resposta.listar_aluno_by(requisicao.getVar1(), requisicao.getVar2());
+                        resposta.setStatus(0);
+                        System.out.println("\n[ OK ] - Pesquisa Realizada!");
                         break;
 
-                    case 14: // 1 - Aluno | 4 - Alteracao
-                        resposta_aluno.alterar_aluno(requisicao_aluno.getVar1(), requisicao_aluno.getVar2(), requisicao_aluno.getVar3());
-                        resposta_aluno.setStatus(0);
-                        resposta_aluno.listar_aluno();
+                    case 14: // Alteracao de dados de aluno
+                        System.out.println("Alteracao do ID(v1): '" + requisicao.getVar1() + "' na coluna(v2): '" + requisicao.getVar2() + "' novo valor(v3): " + requisicao.getVar3());
+                        resposta.alterar_aluno(requisicao.getVar1(), requisicao.getVar2(), requisicao.getVar3());
+                        resposta.setStatus(0);
+                        resposta.listar_aluno_by("ID", requisicao.getVar1());
+                        System.out.println("\n[ OK ] - Aluno '"+requisicao.getVar1()+"' Atualizado!");
                         break;
 
-                    case 22: // Listar Professores -> 2 - Professores | 2 - Listar
-                        resposta_aluno.listar_professor();
-                        resposta_aluno.setStatus(0);
+                    // ----- Acoes Professor ----- \\
+                    case 22: // Listar todos os professores cadastrados
+                        resposta.listar_professor();
+                        resposta.setStatus(0);
+                        System.out.println("\n[ OK ] - Lista de Professores.");
                         break;
 
-                    case 23: // Pesquisa Professores -> 2 - Professores | 3 - Pesquisa
-                        System.out.println("Pesquisa feita por Chave: " + requisicao_aluno.getVar1() + " Valor: " + requisicao_aluno.getVar2());
-                        resposta_aluno.listar_professor_by(requisicao_aluno.getVar1(), requisicao_aluno.getVar2());
-                        resposta_aluno.setStatus(0);
+                    case 23: // Pesquisa Professores
+                        System.out.println("Pesquisa feita por Chave(v1): '" + requisicao.getVar1() + "' Valor(v2): '" + requisicao.getVar2() + "'");
+                        resposta.listar_professor_by(requisicao.getVar1(), requisicao.getVar2());
+                        resposta.setStatus(0);
+                        System.out.println("\n[ OK ] - Pesquisa Realizada!");
                         break;
 
-                    case 24: // Alteracao de Valor Professor -> 2 Professores | 4 - Alteracao
-                        resposta_aluno.alterar_professor(requisicao_aluno.getVar1(), requisicao_aluno.getVar2(), requisicao_aluno.getVar3());
-                        resposta_aluno.setStatus(0);
-                        resposta_aluno.listar_professor();
+                    case 24: // Alteracao de valor professor
+                        System.out.println("Alteracao do ID(v1): '" + requisicao.getVar1() + "' na coluna(v2): '" + requisicao.getVar2() + "' novo valor(v3): " + requisicao.getVar3());
+                        resposta.alterar_professor(requisicao.getVar1(), requisicao.getVar2(), requisicao.getVar3());
+                        resposta.setStatus(0);
+                        resposta.listar_professor_by("ID", requisicao.getVar1());
+                        System.out.println("\n[ OK ] - Professor '"+requisicao.getVar1()+"' Atualizado!");
                         break;
 
-                    case 32: // Listar Cursos
-                        resposta_aluno.listar_cursos();
-                        resposta_aluno.setStatus(0);
+                    // ----- Acoes Curso ----- \\
+                    case 32: // Listar cursos cadastrados
+                        resposta.listar_cursos();
+                        resposta.setStatus(0);
+                        System.out.println("\n[ OK ] - Lista de Cursos.");
                         break;
 
                     case 33: // Pesquisar
-                        System.out.println("Pesquisa feita por Chave: " + requisicao_aluno.getVar1() + " Valor: " + requisicao_aluno.getVar2());
-                        resposta_aluno.listar_cursos_by(requisicao_aluno.getVar1(), requisicao_aluno.getVar2());
-                        resposta_aluno.setStatus(0);
+                        System.out.println("Pesquisa feita por Chave(v1): '" + requisicao.getVar1() + "' Valor(v2): '" + requisicao.getVar2() + "'");
+                        resposta.listar_cursos_by(requisicao.getVar1(), requisicao.getVar2());
+                        resposta.setStatus(0);
+                        System.out.println("\n[ OK ] - Pesquisa Realizada!");
                         break;
 
                     case 34: // Alteracao
-                        resposta_aluno.alterar_cursos(requisicao_aluno.getVar1(), requisicao_aluno.getVar2(), requisicao_aluno.getVar3());
-                        resposta_aluno.setStatus(0);
-                        resposta_aluno.listar_professor();
+                        System.out.println("Alteracao do ID(v1): '" + requisicao.getVar1() + "' na coluna(v2): '" + requisicao.getVar2() + "' novo valor(v3): " + requisicao.getVar3());
+                        resposta.alterar_cursos(requisicao.getVar1(), requisicao.getVar2(), requisicao.getVar3());
+                        resposta.setStatus(0);
+                        resposta.listar_cursos_by("ID", requisicao.getVar1());
+                        System.out.println("\n[ OK ] - Curso '"+requisicao.getVar1()+"' Atualizado!");
                         break;
 
+                    // ----- Acoes Despesas ----- \\
                     case 42: // Listar Despesas
-                        resposta_aluno.setStatus(0);
-                        resposta_aluno.listar_despesas();
+                        resposta.setStatus(0);
+                        resposta.listar_despesas();
+                        System.out.println("\n[ OK ] - Lista de Despesas.");
                         break;
 
                     case 43: // Pesquisar Despesas
-                        resposta_aluno.listar_despesas_by(requisicao_aluno.getVar1(), requisicao_aluno.getVar2());
-                        resposta_aluno.setStatus(0);
+                        System.out.println("Pesquisa feita por Chave(v1): '" + requisicao.getVar1() + "' Valor(v2): '" + requisicao.getVar2() + "'");
+                        resposta.listar_despesas_by(requisicao.getVar1(), requisicao.getVar2());
+                        resposta.setStatus(0);
+                        System.out.println("\n[ OK ] - Pesquisa Realizada!");
                         break;
 
+                    // ----- Acoes Financeiro ----- \\
                     case 51: // Lucro Atual
-                        resposta_aluno.consulta_lucro();
-                        resposta_aluno.setStatus(0);
+                        resposta.consulta_lucro();
+                        resposta.setStatus(0);
+                        System.out.println("\n[ OK ] - Total Lucro.");
                         break;
 
                     case 52: // Custos Professores
-                        resposta_aluno.setStatus(0);
-                        resposta_aluno.consulta_custo_professores();
+                        resposta.setStatus(0);
+                        resposta.consulta_custo_professores();
+                        System.out.println("\n[ OK ] - Total Gastos Professores.");
                         break;
 
                     case 53: // Receita Total
-                        resposta_aluno.setStatus(0);
-                        resposta_aluno.consulta_receita();
+                        resposta.setStatus(0);
+                        resposta.consulta_receita();
+                        System.out.println("\n[ OK ] - Total de Receita.");
                         break;
 
                     case 54: // Total com Despesas
-                        resposta_aluno.setStatus(0);
-                        resposta_aluno.consulta_despesas();
+                        resposta.setStatus(0);
+                        resposta.consulta_despesas();
+                        System.out.println("\n[ OK ] - Total de Despesas.");
                         break;
 
                 }
 
-                // if se não for suportado.
+                if (resposta.getStatus() == 0){
+                    System.out.println("\n]------------------------[ Requisicao feita com Sucesso! ]------------------------[\n");
+                } else{
+                    System.out.println("ERROR: falha na requisicao!!");
+                }
 
-                // SwithCase
-                // If opt2 != 0, calcula a divisão, set status para 2;
-                conexao.send(client_socket, resposta_aluno);
+                conexao.send(client_socket, resposta);
+
                 try {
                     client_socket.close();
                     serversocket.close();
-                } // desconexao
+                }
                 catch (Exception e) {
-                    System.out.println("N�o encerrou a conex�o corretamente" + e.getMessage());
+                    System.out.println("Nao encerrou a conexao corretamente" + e.getMessage());
                 }
             }
+
         }while(true);
     }
 
@@ -171,7 +200,7 @@ public class Servidor {
             client_socket = serversocket.accept();              // fase de conexão
             ret = true;
         } catch (Exception e) {
-            System.out.println("N�o fez conex�o" + e.getMessage());
+            System.out.println("Nao fez conexao" + e.getMessage());
             ret = false;
         }
         return ret;

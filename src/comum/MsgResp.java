@@ -214,7 +214,7 @@ public class MsgResp implements Serializable{
 
         int max_value_v1 = 6;
         int max_value_v2 = 7;
-        for(MsgReq n: numeros) {
+        for(MsgReq n: profes) {
             if(n.getVar1().length() > max_value_v1){
                 max_value_v1 = n.getVar1().length();
             }
@@ -236,7 +236,7 @@ public class MsgResp implements Serializable{
 
         switch (variable){
             case "id":
-                for(MsgReq student: this.numeros) {
+                for(MsgReq student: this.profes) {
                     if (student.getId().toLowerCase().contains(valor)) {
                         System.out.format("| %5s " + "| %"+max_value_v1+"s " + "| %"+max_value_v2+"s " + "| %10s " + "| %10s |",
                                 student.getId(), student.getVar1(), student.getVar2(), student.getVar3(), student.getVar4());
@@ -245,7 +245,7 @@ public class MsgResp implements Serializable{
                 }
                 break;
             case "nome":
-                for(MsgReq student: this.numeros) {
+                for(MsgReq student: this.profes) {
                     if (student.getVar1().toLowerCase().contains(valor)) {
                         System.out.format("| %5s " + "| %"+max_value_v1+"s " + "| %"+max_value_v2+"s " + "| %10s " + "| %10s |",
                                 student.getId(), student.getVar1(), student.getVar2(), student.getVar3(), student.getVar4());
@@ -254,7 +254,7 @@ public class MsgResp implements Serializable{
                 }
                 break;
             case "curso":
-                for(MsgReq student: this.numeros) {
+                for(MsgReq student: this.profes) {
                     if (student.getVar2().toLowerCase().contains(valor)) {
                         System.out.format("| %5s " + "| %"+max_value_v1+"s " + "| %"+max_value_v2+"s " + "| %10s " + "| %10s |",
                                 student.getId(), student.getVar1(), student.getVar2(), student.getVar3(), student.getVar4());
@@ -263,7 +263,7 @@ public class MsgResp implements Serializable{
                 }
                 break;
             case "status":
-                for(MsgReq student: this.numeros) {
+                for(MsgReq student: this.profes) {
                     if (student.getVar4().toLowerCase().equalsIgnoreCase(valor)) {
                         System.out.format("| %5s " + "| %"+max_value_v1+"s " + "| %"+max_value_v2+"s " + "| %10s " + "| %10s |",
                                 student.getId(), student.getVar1(), student.getVar2(), student.getVar3(), student.getVar4());
@@ -494,7 +494,7 @@ public class MsgResp implements Serializable{
                 break;
             case "descricao":
                 for(MsgReq desp: this.despesas) {
-                    if (desp.getVar1().toLowerCase().contains(valor)) {
+                    if (desp.getVar2().toLowerCase().contains(valor)) {
                         System.out.format("| %5s " + "| %"+max_value_v1+"s " + "| %"+max_value_v2+"s " + "| %10s |",
                                 desp.getId(), desp.getVar1(), desp.getVar2(), desp.getVar3());
                         System.out.println(); // value
@@ -503,7 +503,7 @@ public class MsgResp implements Serializable{
                 break;
             case "data":
                 for(MsgReq desp: this.despesas) {
-                    if (desp.getVar4().toLowerCase().contains(valor)) {
+                    if (desp.getVar1().toLowerCase().contains(valor)) {
                         System.out.format("| %5s " + "| %"+max_value_v1+"s " + "| %"+max_value_v2+"s " + "| %10s |",
                                 desp.getId(), desp.getVar1(), desp.getVar2(), desp.getVar3());
                         System.out.println(); // value

@@ -2,6 +2,7 @@ package cliente;
 
 import java.io.*;
 import java.net.*;
+import java.util.Locale;
 import java.util.Scanner;
 import comum.*;
 
@@ -13,13 +14,14 @@ public class Cliente {
     public Cliente() {
         try {
             socket = new Socket("localhost", 9600);
-        } // fase de conexao
+        }
         catch (Exception e) {
             System.out.println("Nao consegui resolver o host...");
         }
     }
 
     public static void print_client(){
+        Locale.setDefault(new Locale("pt", "BR"));
         System.out.println("\n+" + "-".repeat(75) + "+");
         System.out.printf("| %14s " + "%20s" + "%15s |", "", "-- { Sistema Gerenciamento Educacional } --", "");
         System.out.println();
@@ -28,29 +30,20 @@ public class Cliente {
         System.out.println("+" + "-".repeat(75) + "+");
     }
 
-    public void clear_console(boolean pr_cl){
-
-        // TODO: Function to clear console
-
-        if(pr_cl){
-            print_client();
-        }
-    }
-
     public static void main(String args[]) {
 
         print_client();
+
         Scanner in = new Scanner(System.in);
 
         int principal_option = 0;
         do {
             System.out.println("\n]------------------------[ Gerenciador Educacional ]------------------------[");
-
             System.out.println("\nEscolha uma Opcao de Gerenciamento: ");
             System.out.println("  1 - Alunos\n  2 - Professores\n  3 - Cursos\n  4 - Despesas\n  5 - Financeiro\n  0 - exit");
-
             System.out.print("Digite: ");
-            try{
+
+            try{ // Se a entrada for invalida
                 principal_option = Integer.parseInt(in.nextLine());
                 if(principal_option < 1 || principal_option > 5){
                     break;
@@ -66,7 +59,7 @@ public class Cliente {
                     System.out.print("Digite: ");
                     int escolha_aluno = 0;
 
-                    try{
+                    try{ // Se a entrada for invalida de alunos
                         escolha_aluno = Integer.parseInt(in.nextLine());
                         if(escolha_aluno < 1 || escolha_aluno > 4){
                             break;
@@ -76,8 +69,7 @@ public class Cliente {
                     }
 
                     switch (escolha_aluno){
-
-                        case 1: // Cadastrar
+                        case 1: // Cadastrar aluno no sistema, com entrada de dados.
                             System.out.println("\n-----[ Cadastro de Aluno ]-----");
                             System.out.print("Nome Completo: ");
                             String op1 = in.nextLine();
@@ -91,10 +83,10 @@ public class Cliente {
                             System.out.print("Confirma o Cadastro [s/n]: ");
                             String confirma_cadastro = in.nextLine();
 
-                            if (confirma_cadastro.toLowerCase().equalsIgnoreCase("s")){}else{
+                            if (confirma_cadastro.equalsIgnoreCase("s")){}else{
                                 System.out.println("\n[ Falha ] - Aluno NAO Cadastrado!");
                                 break;
-                            }
+                            } // Qualquer entrada que nao seja 's', nao realiza o cadastro.
 
                             MsgReq requisicao_aluno = new MsgReq(op1, op2, op3, op4, principal_option);
 
@@ -121,8 +113,8 @@ public class Cliente {
 
                         case 3: // Pesquisar
                             System.out.println("\n-----[ Pesquisa de Alunos Cadastrados ]-----");
-                            System.out.println("Para realizar a pesquisa é necessário informar o valor e coluna. \nPor Exemplo: Pesquise por todos os alunos 'ativo', usando a coluna 'Status'");
-                            System.out.println("É preciso infomar umas das colunas: ['Nome', 'Curso', 'Status']\n");
+                            System.out.println("Para realizar a pesquisa eh necessario informar o valor e coluna. \nPor Exemplo: Pesquise por todos os alunos 'ativo', usando a coluna 'Status'");
+                            System.out.println("Nome das colunas: ['ID', 'Nome', 'Curso', 'Status']\n");
 
                             System.out.print("Valor: ");
                             String valor_escolha_aluno = in.nextLine();
@@ -144,9 +136,9 @@ public class Cliente {
 
                         case 4: // Alterar Valor
                             System.out.println("\n-----[ Alterar Dados de Alunos Cadastrados ]-----");
-                            System.out.println("Para alterar/atualizar informaçoes de um aluno é necessário ter o ID.");
-                            System.out.println("É preciso infomar umas das colunas: ['Nome', 'Curso', 'Valor', 'Status']\n");
-                            System.out.println("Por exemplo: O aluno com o ID '14871' está ativo mas deixou de frequentar as aulas e passa a ser inativo>");
+                            System.out.println("Para alterar/atualizar informacoes de um aluno eh necessario ter o ID.");
+                            System.out.println("Eh preciso infomar umas das colunas: ['Nome', 'Curso', 'Valor', 'Status']\n");
+                            System.out.println("<Por exemplo: O aluno com o ID '14871' esta ativo mas deixou de frequentar as aulas e passa a ser inativo>\n");
 
                             System.out.print("ID do Aluno: ");
                             String id_aluno_alt = in.nextLine();
@@ -157,7 +149,7 @@ public class Cliente {
                             System.out.print("Atualizar por: ");
                             String valor_aluno_alt = in.nextLine();
 
-                            System.out.print("Confirma Atualização [s/n]: ");
+                            System.out.print("Confirma Atualizacao [s/n]: ");
                             String confirma_atualizacao = in.nextLine();
 
                             if (confirma_atualizacao.toLowerCase().equalsIgnoreCase("s")){}else{
@@ -203,7 +195,7 @@ public class Cliente {
                             String cursos_prof = in.nextLine();
                             System.out.print("Salario: ");
                             String salario_prof = in.nextLine();
-                            System.out.print("Status: ");
+                            System.out.print("Status [ativo / inativo]: ");
                             String stats_prof = in.nextLine();
 
                             System.out.print("Confirma o Cadastro [s/n]: ");
@@ -220,7 +212,7 @@ public class Cliente {
                             conexao.send(socket, requisicao_prof);
 
                             MsgResp resposta_prof = (MsgResp) conexao.receive(socket);
-                            System.out.println("\n[ OK ] - Aluno Cadastrado!");
+                            System.out.println("\n[ OK ] - Professor Cadastrado!");
                             break;
 
                         case 2: // Listar
@@ -239,8 +231,8 @@ public class Cliente {
 
                         case 3: // Pesquisar
                             System.out.println("\n-----[ Pesquisa de Professores Cadastrados ]-----");
-                            System.out.println("Para realizar a pesquisa é necessário informar o valor e coluna. \nPor Exemplo: Pesquise por todos os professores 'ativo', usando a coluna 'Status'");
-                            System.out.println("É preciso infomar umas das colunas: ['ID', 'Nome', 'Curso', 'Status']\n");
+                            System.out.println("Para realizar a pesquisa eh necessario informar o valor e coluna. \nPor Exemplo: Pesquise por todos os professores 'ativo', usando a coluna 'Status'");
+                            System.out.println("Nome das colunas: ['ID', 'Nome', 'Curso', 'Status']\n");
 
                             System.out.print("Valor: ");
                             String valor_escolha_prof = in.nextLine();
@@ -261,9 +253,9 @@ public class Cliente {
 
                         case 4: // Alterar Valor
                             System.out.println("\n-----[ Alterar Dados de Professores Cadastrados ]-----");
-                            System.out.println("Para alterar/atualizar informaçoes de um professor é necessário ter o ID.");
-                            System.out.println("É preciso infomar umas das colunas: ['Nome', 'Curso', 'Salario', 'Status']\n");
-                            System.out.println("Por exemplo: O professor com o ID '54321' ganhou um aumento e seu salario passa a ser maior");
+                            System.out.println("Para alterar/atualizar informacoes de um professor eh necessario ter o ID.");
+                            System.out.println("Eh preciso infomar umas das colunas: ['Nome', 'Curso', 'Salario', 'Status']\n");
+                            System.out.println("<Por exemplo: O professor com o ID '54321' ganhou um aumento e seu salario passa a ser maior>");
 
                             System.out.print("ID do Professor: ");
                             String id_prof_alt = in.nextLine();
@@ -272,11 +264,11 @@ public class Cliente {
                             System.out.print("Atualizar por: ");
                             String valor_prof_alt = in.nextLine();
 
-                            System.out.print("Confirma Atualização [s/n]: ");
+                            System.out.print("Confirma Atualizacao [s/n]: ");
                             String confirma_atualizacao_pf = in.nextLine();
 
                             if (confirma_atualizacao_pf.toLowerCase().equalsIgnoreCase("s")){}else{
-                                System.out.println("\n[ Falha ] - Aluno '"+id_prof_alt+"' NAO Atualizado!");
+                                System.out.println("\n[ Falha ] - Professor '"+id_prof_alt+"' NAO Atualizado!");
                                 break;
                             }
 
@@ -287,7 +279,7 @@ public class Cliente {
 
                             MsgResp resposta_aluno_4 = (MsgResp) conexao.receive(socket);
                             resposta_aluno_4.alterar_professor(id_prof_alt, variable_prof_alt, valor_prof_alt);
-                            System.out.println("\n[ OK ] - Aluno '"+id_prof_alt+"' Atualizado!");
+                            System.out.println("\n[ OK ] - Professor '"+id_prof_alt+"' Atualizado!");
                             break;
 
                     }
@@ -353,8 +345,8 @@ public class Cliente {
 
                         case 3: // Pesquisar
                             System.out.println("\n-----[ Pesquisa de Cursos Cadastrados ]-----");
-                            System.out.println("Para realizar a pesquisa é necessário informar o valor e coluna. \nPor Exemplo: Pesquise por todos os cursos 'AED', usando a coluna 'Modalidade'");
-                            System.out.println("É preciso infomar umas das colunas: ['ID', 'Nome', 'Modalidade', 'Status']\n");
+                            System.out.println("Para realizar a pesquisa eh necessario informar o valor e coluna. \nPor Exemplo: Pesquise por todos os cursos 'EAD', usando a coluna 'Modalidade'");
+                            System.out.println("Eh preciso infomar umas das colunas: ['ID', 'Nome', 'Modalidade', 'Status']\n");
 
                             System.out.print("Valor: ");
                             String valor_escolha_curso = in.nextLine();
@@ -375,8 +367,8 @@ public class Cliente {
 
                         case 4: // Alterar Valor
                             System.out.println("\n-----[ Alterar Dados de Cursos Cadastrados ]-----");
-                            System.out.println("Para alterar/atualizar informaçoes de um curso é necessário ter o ID.");
-                            System.out.println("É preciso infomar umas das colunas: ['Nome', 'Carga', 'Modalidade', 'Status']\n");
+                            System.out.println("Para alterar/atualizar informacoes de um curso eh necessario ter o ID.");
+                            System.out.println("Eh preciso infomar umas das colunas: ['Nome', 'Carga', 'Modalidade', 'Status']\n");
                             System.out.println("Por exemplo: O curso com o ID '15975' deixou de ser ativo e passa a ser ativo");
 
                             System.out.print("ID do Curso: ");
@@ -386,7 +378,7 @@ public class Cliente {
                             System.out.print("Atualizar por: ");
                             String valor_curso_alt = in.nextLine();
 
-                            System.out.print("Confirma Atualização [s/n]: ");
+                            System.out.print("Confirma Atualizacao [s/n]: ");
                             String confirma_atualizacao_cr = in.nextLine();
 
                             if (confirma_atualizacao_cr.toLowerCase().equalsIgnoreCase("s")){}else{
@@ -466,9 +458,9 @@ public class Cliente {
 
                         case 3: // Pesquisar despesas
                             System.out.println("\n-----[ Pesquisa de Despesas Cadastradas ]-----");
-                            System.out.println("Para realizar a pesquisa é necessário informar o valor e coluna. \nPor Exemplo: Pesquise por todos os cursos 'AED', usando a coluna 'Modalidade'");
-                            System.out.println("É preciso infomar umas das colunas: ['ID', 'Descricao', 'Data']\n");
-                            // TODO: Alterar descricao
+                            System.out.println("Para realizar a pesquisa eh necessario informar o valor e coluna. \nPor Exemplo: Pesquise por despesas onde contem o valor 'notebook' na 'descricao'.");
+                            System.out.println("Eh preciso infomar umas das colunas: ['ID', 'Descricao', 'Data']\n");
+
                             System.out.print("Valor: ");
                             String valor_escolha_fin = in.nextLine();
                             System.out.print("Nome da Coluna: ");
@@ -492,7 +484,7 @@ public class Cliente {
                     // Cadastros de empregados??
 
                     System.out.println("\n" + "-".repeat(10) +"[ Gerenciamento de Financeiro ]"+"-".repeat(10)+"\nQual acao deseja prosseguir: ");
-                    System.out.println("  1 - Consultar Lucro\n  2 - Gastos Com Professores\n  3 - Total de Receita");
+                    System.out.println("  1 - Consultar Lucro\n  2 - Gastos Com Professores\n  3 - Total de Receita\n  4 - Total Gastos com Despesas");
                     System.out.print("Digite: ");
                     int escolha_financeiro = 0;
 
@@ -561,20 +553,15 @@ public class Cliente {
                             System.out.print("Enter para continuar. ");
                             in.nextLine();
                             break;
-
                     }
-
                     break;
-
             }
-
         } while (principal_option != 0);
 
-
         try {
-            socket.close();                               // fase de desconex�o
+            socket.close();
         } catch (IOException e) {
-            System.out.println("N�o encerrou a conex�o corretamente" + e.getMessage());
+            System.out.println("Nao encerrou a conexao corretamente" + e.getMessage());
         }
     }
 }

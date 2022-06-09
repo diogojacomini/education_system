@@ -1,1 +1,8 @@
 .class
+/out/*
+/out/
+/out
+.xml
+.idea
+.idea/
+
